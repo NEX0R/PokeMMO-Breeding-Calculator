@@ -17,20 +17,55 @@ Desktop.ini
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Temporary files
 *.tmp
 *.temp
 .cache/
 
-# Node modules (if added in future)
+# Node modules
 node_modules/
 
-# Build outputs (if added in future)
+# Build outputs
 dist/
+dist-electron/
 build/
+out/
+release/
+
+# Electron
+*.asar
+app-update.yml
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
 
 # Environment files
 .env
 .env.local
 .env.*.local
+
+# User data
+*.db
+*.sqlite
+*.sqlite3
+
+# Coverage
+coverage/
+*.lcov
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Production
+/dist
+/build

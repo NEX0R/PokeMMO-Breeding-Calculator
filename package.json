@@ -1,10 +1,15 @@
 {
   "name": "pokemmo-breeding-calculator",
-  "version": "1.0.0",
-  "description": "A browser utility designed for the simplification of the process of breeding in PokéMMO",
-  "main": "index.html",
+  "version": "2.0.0",
+  "description": "A desktop application for optimizing breeding in PokéMMO with OCR screenshot support and egg group validation",
+  "main": "src/electron/main.js",
   "scripts": {
-    "start": "npx http-server -p 8080 -o",
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "web": "npx http-server -p 8080 -o",
+    "build": "electron-builder --windows",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
     "test": "echo \"No tests specified yet\" && exit 0"
   },
   "repository": {
@@ -17,7 +22,10 @@
     "calculator",
     "pokemon",
     "ivs",
-    "breeding-calculator"
+    "breeding-calculator",
+    "ocr",
+    "egg-groups",
+    "desktop-app"
   ],
   "author": "Unovamata (ZenAkiSen)",
   "license": "SEE LICENSE IN LICENSE",
@@ -25,6 +33,36 @@
     "url": "https://github.com/Unovamata/PokeMMO-Breeding-Calculator/issues"
   },
   "homepage": "https://unovamata.github.io/PokeMMO-Breeding-Calculator/",
-  "devDependencies": {},
-  "dependencies": {}
+  "build": {
+    "appId": "com.unovamata.pokemmo-breeding-calculator",
+    "productName": "PokeMMO Breeding Calculator",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "index.html",
+      "style.css",
+      "calculator.js",
+      "utils.js",
+      "fonts/**/*",
+      "img/**/*",
+      "stats/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "img/logo.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "tesseract.js": "^5.0.4"
+  }
 }

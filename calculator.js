@@ -15,38 +15,34 @@ var pokeballPrice = 200;
 var parent;
 
 document.addEventListener("DOMContentLoaded", function() {
-    const breedersButton = document.getElementById("breeders"),
+    const myPokemonButton = document.getElementById("my-pokemon-tab"),
+          breedersButton = document.getElementById("breeders"),
           powersButton = document.getElementById("powers"),
-          pricesButton = document.getElementById("prices"),
-          settingsButton = document.getElementById("settings");
+          pricesButton = document.getElementById("prices");
 
-    const breedersMenu = document.getElementById("gender-container"),
+    const myPokemonMenu = document.getElementById("my-pokemon-container"),
+          breedersMenu = document.getElementById("gender-container"),
           powersMenu = document.getElementById("powers-container"),
-          pricesMenu = document.getElementById("prices-container"),
-          settingsMenu = document.getElementById("settings-container");
+          pricesMenu = document.getElementById("prices-container");
+
+    // Note: My Pokemon tab is handled in pokemonUI.js
+    // This is just for compatibility with existing tab switching
 
     breedersButton.addEventListener("click", function(){
+        HideTab(myPokemonMenu, myPokemonButton);
         SelectTab(breedersMenu, breedersButton);
         HideTab(powersMenu, powersButton);
         HideTab(pricesMenu, pricesButton);
-        //HideTab(settingsMenu, settingsButton);
     });
 
     powersButton.addEventListener("click", function(){
+        HideTab(myPokemonMenu, myPokemonButton);
         HideTab(breedersMenu, breedersButton);
         SelectTab(powersMenu, powersButton);
         HideTab(pricesMenu, pricesButton);
-        //HideTab(settingsMenu, settingsButton);
     });
 
     pricesButton.addEventListener("click", ShowTotalResultsScreen);
-
-    /*settingsButton.addEventListener("click", function(){
-        HideTab(breedersMenu, breedersButton);
-        HideTab(powersMenu, powersButton);
-        HideTab(pricesMenu, pricesButton);
-        SelectTab(settingsMenu, settingsButton);
-    });*/
 
     function SelectTab(element, button){
         element.style.display = "block";
@@ -59,10 +55,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function ShowTotalResultsScreen(){
+        HideTab(myPokemonMenu, myPokemonButton);
         HideTab(breedersMenu, breedersButton);
         HideTab(powersMenu, powersButton);
         SelectTab(pricesMenu, pricesButton);
-        //HideTab(settingsMenu, settingsButton);
     }
     
     const calculateButton = document.getElementById("calculate"),
@@ -302,14 +298,26 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function GetBestPrice(left, right){
-        const f = femaleCosts.costs, 
+        const f = femaleCosts.costs,
               m = maleCosts.costs;
 
-        // Female IV Costs;
-        let FIVLeftCost = f[left], FIVRightCost = f[right]; 
-
-        // Male IV Costs;
+        // Check for owned Pokemon with these IVs (cost = 0)
+        let FIVLeftCost = f[left], FIVRightCost = f[right];
         let MIVLeftCost = m[left], MIVRightCost = m[right];
+
+        // If pokemonStorage is available, check for owned Pokemon
+        if (typeof pokemonStorage !== 'undefined') {
+            const ownedFemaleLeft = pokemonStorage.findByPerfectIV(getStatKey(left), 'female');
+            const ownedFemaleRight = pokemonStorage.findByPerfectIV(getStatKey(right), 'female');
+            const ownedMaleLeft = pokemonStorage.findByPerfectIV(getStatKey(left), 'male');
+            const ownedMaleRight = pokemonStorage.findByPerfectIV(getStatKey(right), 'male');
+
+            // Override costs if we own the Pokemon
+            if (ownedFemaleLeft.length > 0) FIVLeftCost = 0;
+            if (ownedFemaleRight.length > 0) FIVRightCost = 0;
+            if (ownedMaleLeft.length > 0) MIVLeftCost = 0;
+            if (ownedMaleRight.length > 0) MIVRightCost = 0;
+        }
 
         // Sum of costs;
         let LeftToRightCost = FIVLeftCost + MIVRightCost,
@@ -329,6 +337,19 @@ document.addEventListener("DOMContentLoaded", function() {
         totalBreedersPrice += LeftToRightCost;
 
         return "left";
+    }
+
+    // Helper function to convert stat name to storage key
+    function getStatKey(statName) {
+        const mapping = {
+            'HP': 'hp',
+            'Attack': 'attack',
+            'Defense': 'defense',
+            'Sp. Attack': 'spAttack',
+            'Sp. Defense': 'spDefense',
+            'Speed': 'speed'
+        };
+        return mapping[statName] || statName.toLowerCase();
     }
 
     function PopulateTree(node, parentElement) {

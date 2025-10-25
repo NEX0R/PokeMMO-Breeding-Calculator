@@ -14,15 +14,40 @@
 
 # PokéMMO Breeding Calculator
 
-**[The PokéMMO Breeding Calculator](https://unovamata.github.io/PokeMMO-Breeding-Calculator/)** is a browser utility designed for the simplification of the process of breeding in PokéMMO by using a tree structure to detail the steps required for a breed with the desired parameters. The PokéMMO Breeding Calculator allocates breeding costs, items to buy, items already on the player's inventory, market prices, and breed total price.
+**[The PokéMMO Breeding Calculator](https://unovamata.github.io/PokeMMO-Breeding-Calculator/)** is a powerful desktop and web application designed to optimize the breeding process in PokéMMO. Using advanced algorithms and OCR technology, it helps you create the perfect Pokémon while minimizing costs and maximizing efficiency.
 
-- **Breed Mapping:** Click checkboxes in the "Stats to Breed" tab to select the IVs to pass to your breed. After clicking the "Calculate" button, the calculator will generate a visual map of all the combinations necessary for your desired breed.
-- **Optimal Cost Allocation:** The calculator will maximize profit by picking the cheapest breeders based on market prices inputted in the "Breeders Prices" tab.
-- **Battle Point Usage:** The tool will use battle points to buy braces to minimize investment and maximize profit while also calculating the amount of Battle Points spent on a specific breed if desired.
-- **Everstone Pricing:** The utility can calculate variable Everstone prices by inputting the current Everstone market price on its respective field.
-- **Items Already Owned**: The calculator will consume items already in the user's inventory, if any, using these when calculating items to buy for the final breed.
-- **Toggle Breed Map Branches:** Deactivate nodes or entire branches by clicking the checkboxes at the top of breeder nodes to organize your breeding process.
-- **Zoom:** You can zoom in or zoom out based on the size of your Breeding Map to better visualize the steps needed for an eventual breed.
+## 🌟 Key Features
+
+### Core Breeding Features
+- **Breed Mapping:** Visual tree structure showing all breeding combinations needed for your desired Pokémon
+- **Optimal Cost Allocation:** Automatically selects the cheapest breeding path based on market prices and owned Pokémon
+- **Battle Point Optimization:** Smart BP usage to minimize investment while maximizing profit
+- **Flexible Item Pricing:** Variable Everstone and breeding item prices based on current market
+- **Toggle Breed Map Branches:** Deactivate specific breeding paths to customize your strategy
+- **Zoom Controls:** Scale the breeding tree for better visualization
+
+### 🆕 Advanced Features (v2.0)
+- **📷 OCR Screenshot Import:** Upload multiple screenshots to automatically extract Pokémon IVs
+  - Powered by Tesseract.js for accurate text recognition
+  - Batch processing for multiple Pokémon at once
+  - Manual nature selection for complete data
+
+- **💾 Owned Pokémon Management:** Track your Pokémon collection
+  - Automatic IV detection from screenshots
+  - Gender and nature tracking
+  - Perfect IV highlighting
+  - Cost optimization using owned Pokémon (cost = 0)
+
+- **🧬 Egg Group Validation:** Automatic breeding compatibility checking
+  - Integration with PokéAPI for accurate egg group data
+  - Ensures breeding pairs are compatible
+  - Prevents costly mistakes
+
+- **💻 Desktop Application:** Available as standalone .exe installer
+  - Built with Electron for native desktop experience
+  - Offline OCR processing for privacy
+  - Local data storage for owned Pokémon
+  - Faster performance than web version
 
 <br>
 <p align="center">
@@ -31,28 +56,146 @@
 
 # Table of Contents
 
+* [Installation](#installation)
 * [How to Use](#how-to-use)
-* [Features](#features)
+  * [Web Version](#web-version)
+  * [Desktop Version](#desktop-version)
+  * [Managing Owned Pokémon](#managing-owned-pokémon)
+  * [Calculating Breeding Costs](#calculating-breeding-costs)
+* [Development](#development)
+* [Technologies Used](#technologies-used)
 * [Contact](#contact)
+
+# Installation
+
+## Web Version
+Simply navigate to **[The PokéMMO Breeding Calculator](https://unovamata.github.io/PokeMMO-Breeding-Calculator/)** and start using it immediately.
+
+## Desktop Version
+
+### Prerequisites
+- Node.js 16+ installed
+- npm or yarn package manager
+
+### Building from Source
+```bash
+# Clone the repository
+git clone https://github.com/Unovamata/PokeMMO-Breeding-Calculator.git
+cd PokeMMO-Breeding-Calculator
+
+# Install dependencies
+npm install
+
+# Run in development mode
+npm start
+
+# Build installer for Windows
+npm run build
+
+# Build for other platforms
+npm run build:mac    # macOS
+npm run build:linux  # Linux
+```
+
+The installer will be generated in the `dist/` folder.
 
 # How to Use
 
-- Navigate to the **[The PokéMMO Breeding Calculator](https://unovamata.github.io/PokeMMO-Breeding-Calculator/)** Github Page and wait for the page to load.
-- Configure Breeder market prices in the "Breeders Prices" tab, you can recognize this tab by the egg icon.
-- Afterwards, go to the tab with a Brace icon and select the stats your resulting Pokémon will have by ticking the respective checkboxes.
-- Introduce the breeding items you have in your inventory in the GUI.
-- **(Optional)** Input your Battle Points if you want to spend these for buying breeding related items.
-- Set the Everstone market price.
-- Click on the **"Calculate"** button and the website will redirect you to the costs tab.
-- After that, you will see how much you need to spend to breed this specific Pokémon, while also visualizing the items to purchase and an informative breeding tree of all the combinations needed to be made for this breed.
+## Web Version
+1. Navigate to the web app
+2. Configure market prices and owned items
+3. Select desired IVs
+4. Click "Calculate" to see your breeding strategy
 
-# Features
+## Desktop Version
+1. Download and install the .exe from releases
+2. Launch the application
+3. Use all web features plus:
+   - Upload screenshots for OCR
+   - Manage owned Pokémon offline
+   - Faster performance
 
-- Flexible breeding visualization.
-- Easy usage & interface.
-- Mindful of player's already acquired items.
-- Deactivate nodes or branches to simplify the breeding process.
-- Modify prices based on market prices.
+## Managing Owned Pokémon
+
+### Adding Pokémon via Screenshots (Desktop Only)
+1. Click the **Pokéball tab** (My Pokémon)
+2. Click **"📷 Upload Screenshots"**
+3. Select one or more screenshots of your Pokémon
+4. Wait for OCR processing
+5. Review extracted IVs and select nature for each Pokémon
+6. Click **"Save All Pokémon"**
+
+### Manual Management
+- View all owned Pokémon in the "My Pokémon" tab
+- Each card shows:
+  - Pokémon name and gender
+  - Perfect IV count (e.g., 3x31)
+  - Nature
+  - Perfect stats
+  - Egg groups
+- Delete Pokémon by clicking the **×** button
+
+## Calculating Breeding Costs
+
+### Step 1: Configure Market Prices
+- Navigate to the **Egg tab** (Breeders Prices)
+- Enter current GTL prices for 1x31 breeders (male and female)
+- Set gender selection cost
+
+### Step 2: Select Target IVs
+- Go to the **Weight/Brace tab** (Stats to Breed)
+- Check the IVs you want in your final Pokémon
+- Enter items you already own in inventory
+- **(Optional)** Enter Battle Points to use for buying braces
+- Set current Everstone market price
+
+### Step 3: Calculate
+- Click the **"Calculate"** button
+- View results in the **Pokéball/Money tab** (Costs):
+  - Total breeding cost
+  - Items to purchase
+  - Battle Points to spend
+  - Visual breeding tree
+
+### Understanding the Breeding Tree
+- Each node shows a breeding step
+- Checkboxes let you disable specific branches
+- Green highlighting shows which IV is being passed
+- The algorithm automatically uses owned Pokémon when available (reducing cost to 0)
+
+# Development
+
+## Project Structure
+```
+PokeMMO-Breeding-Calculator/
+├── src/
+│   ├── electron/         # Electron main process
+│   │   └── main.js
+│   ├── modules/          # Application modules
+│   │   ├── pokeapi.js   # PokéAPI integration
+│   │   ├── ocr.js       # OCR with Tesseract.js
+│   │   ├── pokemonStorage.js  # Pokemon data storage
+│   │   └── pokemonUI.js       # UI controller
+│   └── data/            # Static data files
+├── index.html           # Main HTML
+├── calculator.js        # Core breeding algorithm
+├── utils.js            # Utility functions
+├── style.css           # Styles
+├── fonts/              # Custom fonts
+├── img/                # Images and logos
+├── stats/              # UI icons
+└── package.json        # Dependencies and scripts
+```
+
+## Technologies Used
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript
+- **Desktop:** Electron 28
+- **OCR:** Tesseract.js 5.0
+- **API:** PokéAPI (free, no key required)
+- **Build:** electron-builder
+
+## Contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 # Contact
 

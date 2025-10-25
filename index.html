@@ -24,6 +24,9 @@
 <div class="flex-container">
     <div class="left-section">
         <div class="trapezoid-container">
+            <div class="trapezoid" id="my-pokemon-tab">
+                <img src="stats/pokeball.png">
+            </div>
             <div class="trapezoid selected" id="breeders">
                 <img src="stats/egg.png">
             </div>
@@ -33,9 +36,42 @@
             <div class="trapezoid" id="prices">
                 <img src="stats/poke.png">
             </div>
-            <!--<div class="trapezoid" id="settings">
-                <img src="stats/settings.png">
-            </div>-->
+        </div>
+
+        <div class="container" id="my-pokemon-container" style="display: none;">
+            <table class="table">
+                <caption>My Pokemon Collection</caption>
+            </table>
+
+            <div class="pokemon-upload-section">
+                <h3>Add Pokemon via Screenshots</h3>
+                <p>Upload multiple screenshots of your Pokemon to automatically extract their IVs</p>
+
+                <div class="center pokemmo-button">
+                    <button id="upload-screenshots-btn">
+                        <span>📷 Upload Screenshots</span>
+                    </button>
+                </div>
+                <input type="file" id="screenshot-input" accept="image/*" multiple style="display: none;">
+
+                <div id="ocr-progress" style="display: none;">
+                    <p>Processing screenshots... <span id="ocr-progress-text">0%</span></p>
+                    <div class="progress-bar">
+                        <div id="ocr-progress-bar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div id="pokemon-preview-list"></div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div id="owned-pokemon-list">
+                <h3>Owned Pokemon (<span id="owned-count">0</span>)</h3>
+                <div id="pokemon-cards-container"></div>
+            </div>
+
+            <div class="separator"></div>
         </div>
 
         <div class="container" id="gender-container">
@@ -308,8 +344,20 @@
     </div>
 </div>
 
+<!-- Tesseract.js for OCR -->
+<script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+
+<!-- Application modules -->
+<script src="src/modules/pokeapi.js"></script>
+<script src="src/modules/ocr.js"></script>
+<script src="src/modules/pokemonStorage.js"></script>
+
+<!-- Core application scripts -->
 <script src="utils.js"></script>
 <script src="calculator.js"></script>
+
+<!-- UI controller for Pokemon management -->
+<script src="src/modules/pokemonUI.js"></script>
 
 </body>
 </html>
