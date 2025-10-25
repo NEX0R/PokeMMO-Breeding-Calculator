@@ -1,0 +1,30 @@
+{
+  "name": "pokemmo-breeding-calculator",
+  "version": "1.0.0",
+  "description": "A browser utility designed for the simplification of the process of breeding in PokéMMO",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 8080 -o",
+    "test": "echo \"No tests specified yet\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Unovamata/PokeMMO-Breeding-Calculator.git"
+  },
+  "keywords": [
+    "pokemmo",
+    "breeding",
+    "calculator",
+    "pokemon",
+    "ivs",
+    "breeding-calculator"
+  ],
+  "author": "Unovamata (ZenAkiSen)",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/Unovamata/PokeMMO-Breeding-Calculator/issues"
+  },
+  "homepage": "https://unovamata.github.io/PokeMMO-Breeding-Calculator/",
+  "devDependencies": {},
+  "dependencies": {}
+}
