@@ -17,7 +17,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const ownedCountSpan = document.getElementById("owned-count");
 
     // Pending Pokemon (awaiting nature input)
-    let pendingPokemon = [];
+    // Exposed to window for editIV function
+    window.pendingPokemon = [];
 
     // Tab switching logic
     myPokemonTab.addEventListener("click", function() {
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Show progress
         ocrProgress.style.display = "block";
         pokemonPreviewList.innerHTML = "";
-        pendingPokemon = [];
+        window.pendingPokemon = [];
 
         try {
             // Process images with OCR
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         pokemonPreviewList.innerHTML = '<h3>Review and Add Pokemon</h3><p>Please select the nature for each Pokemon:</p>';
 
-        pendingPokemon = pokemonList;
+        window.pendingPokemon = pokemonList;
 
         pokemonList.forEach((pokemon, index) => {
             const card = createPokemonPreviewCard(pokemon, index);
@@ -123,19 +124,49 @@ document.addEventListener("DOMContentLoaded", function() {
         const perfectIVCount = pokemonOCR.getPerfectIVCount(pokemon.ivs);
         const perfectStats = pokemonOCR.getPerfectStats(pokemon.ivs);
 
+        // Count extracted IVs
+        const extractedIVCount = Object.values(pokemon.ivs).filter(iv => iv !== null).length;
+        const hasAllIVs = extractedIVCount === 6;
+
+        // Warning if not all IVs extracted
+        const warningHTML = !hasAllIVs ? `
+            <div class="extraction-warning">
+                ⚠️ Warning: Only ${extractedIVCount}/6 IVs extracted. You can manually edit missing values by clicking on them.
+            </div>
+        ` : '';
+
         card.innerHTML = `
             <div class="pokemon-card-header">
                 <h4>${pokemon.name || 'Unknown Pokemon'} ${pokemon.gender === 'male' ? '♂' : pokemon.gender === 'female' ? '♀' : ''}</h4>
-                <span class="iv-count">${perfectIVCount}x31</span>
+                <span class="iv-count ${!hasAllIVs ? 'incomplete' : ''}">${perfectIVCount}x31 (${extractedIVCount}/6 IVs)</span>
             </div>
             <div class="pokemon-card-body">
+                ${warningHTML}
                 <div class="iv-display">
-                    <div class="iv-stat ${pokemon.ivs.hp === 31 ? 'perfect' : ''}">HP: ${pokemon.ivs.hp ?? '?'}</div>
-                    <div class="iv-stat ${pokemon.ivs.attack === 31 ? 'perfect' : ''}">Atk: ${pokemon.ivs.attack ?? '?'}</div>
-                    <div class="iv-stat ${pokemon.ivs.defense === 31 ? 'perfect' : ''}">Def: ${pokemon.ivs.defense ?? '?'}</div>
-                    <div class="iv-stat ${pokemon.ivs.spAttack === 31 ? 'perfect' : ''}">SpA: ${pokemon.ivs.spAttack ?? '?'}</div>
-                    <div class="iv-stat ${pokemon.ivs.spDefense === 31 ? 'perfect' : ''}">SpD: ${pokemon.ivs.spDefense ?? '?'}</div>
-                    <div class="iv-stat ${pokemon.ivs.speed === 31 ? 'perfect' : ''}">Spe: ${pokemon.ivs.speed ?? '?'}</div>
+                    <div class="iv-stat ${pokemon.ivs.hp === 31 ? 'perfect' : pokemon.ivs.hp === null ? 'missing' : ''}"
+                         data-stat="hp" data-index="${index}" onclick="editIV(this)">
+                        HP: <span class="iv-value">${pokemon.ivs.hp ?? '?'}</span>
+                    </div>
+                    <div class="iv-stat ${pokemon.ivs.attack === 31 ? 'perfect' : pokemon.ivs.attack === null ? 'missing' : ''}"
+                         data-stat="attack" data-index="${index}" onclick="editIV(this)">
+                        Atk: <span class="iv-value">${pokemon.ivs.attack ?? '?'}</span>
+                    </div>
+                    <div class="iv-stat ${pokemon.ivs.defense === 31 ? 'perfect' : pokemon.ivs.defense === null ? 'missing' : ''}"
+                         data-stat="defense" data-index="${index}" onclick="editIV(this)">
+                        Def: <span class="iv-value">${pokemon.ivs.defense ?? '?'}</span>
+                    </div>
+                    <div class="iv-stat ${pokemon.ivs.spAttack === 31 ? 'perfect' : pokemon.ivs.spAttack === null ? 'missing' : ''}"
+                         data-stat="spAttack" data-index="${index}" onclick="editIV(this)">
+                        SpA: <span class="iv-value">${pokemon.ivs.spAttack ?? '?'}</span>
+                    </div>
+                    <div class="iv-stat ${pokemon.ivs.spDefense === 31 ? 'perfect' : pokemon.ivs.spDefense === null ? 'missing' : ''}"
+                         data-stat="spDefense" data-index="${index}" onclick="editIV(this)">
+                        SpD: <span class="iv-value">${pokemon.ivs.spDefense ?? '?'}</span>
+                    </div>
+                    <div class="iv-stat ${pokemon.ivs.speed === 31 ? 'perfect' : pokemon.ivs.speed === null ? 'missing' : ''}"
+                         data-stat="speed" data-index="${index}" onclick="editIV(this)">
+                        Spe: <span class="iv-value">${pokemon.ivs.speed ?? '?'}</span>
+                    </div>
                 </div>
                 <div class="nature-select">
                     <label>Nature:</label>
@@ -189,13 +220,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Add natures to pending Pokemon
         natureInputs.forEach((input, index) => {
-            if (pendingPokemon[index]) {
-                pendingPokemon[index].nature = input.value;
+            if (window.pendingPokemon[index]) {
+                window.pendingPokemon[index].nature = input.value;
             }
         });
 
         // Fetch egg groups for each Pokemon
-        for (const pokemon of pendingPokemon) {
+        for (const pokemon of window.pendingPokemon) {
             if (pokemon.name) {
                 try {
                     const eggGroups = await pokeAPI.getEggGroups(pokemon.name.toLowerCase());
@@ -208,11 +239,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         // Save to storage
-        pokemonStorage.addMultiplePokemon(pendingPokemon);
+        pokemonStorage.addMultiplePokemon(window.pendingPokemon);
 
         // Clear preview
         pokemonPreviewList.innerHTML = '<p class="success">✓ Pokemon saved successfully!</p>';
-        pendingPokemon = [];
+        window.pendingPokemon = [];
 
         // Refresh owned Pokemon list
         setTimeout(() => {
@@ -282,3 +313,57 @@ document.addEventListener("DOMContentLoaded", function() {
 
     console.log('Pokemon UI Controller loaded');
 });
+
+/**
+ * Global function to edit IV value manually
+ * Called when user clicks on an IV stat cell
+ */
+function editIV(element) {
+    const stat = element.dataset.stat;
+    const index = parseInt(element.dataset.index);
+    const valueSpan = element.querySelector('.iv-value');
+    const currentValue = valueSpan.textContent === '?' ? '' : valueSpan.textContent;
+
+    const newValue = prompt(`Enter IV value for ${stat.toUpperCase()} (0-31):`, currentValue);
+
+    if (newValue !== null) {
+        const parsedValue = parseInt(newValue);
+
+        if (isNaN(parsedValue) || parsedValue < 0 || parsedValue > 31) {
+            alert('Invalid IV value. Must be between 0 and 31.');
+            return;
+        }
+
+        // Update the pending Pokemon data
+        if (window.pendingPokemon && window.pendingPokemon[index]) {
+            window.pendingPokemon[index].ivs[stat] = parsedValue;
+
+            // Update the display
+            valueSpan.textContent = parsedValue;
+
+            // Update classes
+            element.classList.remove('missing');
+            if (parsedValue === 31) {
+                element.classList.add('perfect');
+            } else {
+                element.classList.remove('perfect');
+            }
+
+            // Update the header IV count
+            const card = element.closest('.pokemon-preview-card');
+            const extractedCount = Object.values(window.pendingPokemon[index].ivs).filter(iv => iv !== null).length;
+            const perfectCount = Object.values(window.pendingPokemon[index].ivs).filter(iv => iv === 31).length;
+
+            const ivCountSpan = card.querySelector('.iv-count');
+            ivCountSpan.textContent = `${perfectCount}x31 (${extractedCount}/6 IVs)`;
+
+            if (extractedCount === 6) {
+                ivCountSpan.classList.remove('incomplete');
+
+                // Remove warning if all IVs are now filled
+                const warning = card.querySelector('.extraction-warning');
+                if (warning) warning.remove();
+            }
+        }
+    }
+}
